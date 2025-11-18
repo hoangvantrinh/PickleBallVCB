@@ -1,0 +1,10 @@
+pluginManagement {
+    repositories {
+        maven {
+            url "https://repo.maven.apache.org/maven2/"
+            allowInsecureProtocol = true
+        }
+    }
+}
+rootProject.name = 'PickleBallVCB'
+

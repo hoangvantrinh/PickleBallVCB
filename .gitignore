@@ -1,0 +1,7 @@
+.gradle/
+build/
+run/database/
+*.mv.db
+*.trace.db
+*.jar
+run/app.jar

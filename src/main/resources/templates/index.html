@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pickleball Tỉ số</title>
+    <meta charset="utf-8"/>
+    <style>
+
+        button {
+    transition: all 0.3s ease;
+    transform: scale(1);
+}
+
+button:hover {
+    background-color: #ffcc00;
+    color: #000;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+button:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+        body { font-family: Arial; margin: 40px; }
+        input, button { padding: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        .error { color: red; margin-top: 10px; }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    animation: fadeIn 1s ease-in-out;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+tr:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.01);
+    transition: transform 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+    </style>
+</head>
+<body>
+<form action="/" method="get">
+    <label>Từ ngày:</label>
+    <input name="fromDate" th:value="${#dates.format(filterDTO.fromDate, 'yyyy-MM-dd')}" type="date"/>
+    <label>Đến ngày:</label>
+    <input name="toDate" th:value="${#dates.format(filterDTO.toDate, 'yyyy-MM-dd')}" type="date"/>
+    <label>Người chơi:</label>
+    <input name="playerName" th:value="${filterDTO.playerName}" type="text"/>
+    <button type="submit">Lọc</button>
+<!--    <a href="/">Hiện tất cả</a>-->
+</form>
+<h3>Danh sách trận đấu</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Trận đấu</th>
+        <th>Thời gian</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="m : ${matches}">
+        <td th:text="${m.player1} + ' ' + (${m.player2} ?: '') + ' ' + ${m.scoreTeam1} + ' - ' + ${m.scoreTeam2} + ' ' + ${m.player3} + ' ' + (${m.player4} ?: '')"></td>
+        <td th:text="${#dates.format(m.playedAt, 'yyyy-MM-dd')}"></td>
+    </tr>
+    </tbody>
+</table>
+<h3>Thống kê tổng hợp</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Người chơi</th>
+        <th>Thắng đôi</th>
+        <th>Thua đôi</th>
+        <th>Thắng đơn</th>
+        <th>Thua đơn</th>
+        <th>Tiền thua (vnđ)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="entry : ${combinedStats}">
+        <td th:text="${entry.key}"></td>
+        <td th:text="${entry.value[0]}"></td>
+        <td th:text="${entry.value[1]}"></td>
+        <td th:text="${entry.value[2]}"></td>
+        <td th:text="${entry.value[3]}"></td>
+        <td th:text="${#numbers.formatInteger(entry.value[4], 0, 'POINT')}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
