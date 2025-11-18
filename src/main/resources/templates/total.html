@@ -3,113 +3,93 @@
 <head>
     <title>Pickleball Tỉ số</title>
     <meta charset="UTF-8"/>
-    <style>
-
-        button {
-    transition: all 0.3s ease;
-    transform: scale(1);
-}
-
-button:hover {
-    background-color: #ffcc00;
-    color: #000;
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-
-button:active {
-    transform: scale(0.95);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-        body { font-family: Arial; margin: 40px; }
-        input, button { padding: 8px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; }
-        .error { color: red; margin-top: 10px; }
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    animation: fadeIn 1s ease-in-out;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-th, td {
-    padding: 10px;
-    text-align: center;
-    transition: background-color 0.3s ease;
-}
-
-tr:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.01);
-    transition: transform 0.2s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style th:inline="css">
+        :root{--accent1:#2ecc71;--accent2:#ffd166;--muted:#9aa6b2}
+        body{font-family: Inter, Arial, Helvetica, sans-serif;background: linear-gradient(rgba(0,0,0,0.22), rgba(0,0,0,0.22)), url('@{/templates/back-ground.jpg}') center/cover no-repeat;color:#f2f7ef;margin:0;padding:32px}
+        .container{max-width:1000px;margin:0 auto;background:rgba(0,0,0,0.48);padding:20px;border-radius:12px}
+        h2{margin:0 0 12px 0}
+        form.input-form{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+        form.input-form label{font-size:13px;color:var(--muted);display:flex;flex-direction:column}
+        input[type="text"],input[type="date"]{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:8px 10px;border-radius:8px;color:#f2f7ef}
+        input[type="text"]::placeholder,input[type="date"]::placeholder{color:rgba(242,247,239,0.6)}
+        .button{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#081020;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;box-shadow:0 10px 30px rgba(46,204,113,0.12)}
+        .button:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(46,204,113,0.16)}
+        .link{color:var(--muted);text-decoration:none;font-size:13px}
+        .table-wrapper{overflow:auto;margin-top:16px;display:flex;flex-direction:column}
+        table{width:100%;border-collapse:collapse;min-width:0;table-layout:fixed}
+        thead th{background:rgba(0,0,0,0.32);text-align:left;padding:12px;font-size:13px;color:#e9f7ea}
+        tbody td{padding:12px;border-top:1px solid rgba(255,255,255,0.03);font-size:14px;color:#e6f5e9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+        .delete-form{display:inline}
+        .delete-button{background:#ff6b6b;color:#fff;border:none;padding:6px 10px;border-radius:8px;cursor:pointer}
+        .error{color:#ff6b6b;margin-top:8px}
+        @media(max-width:720px){
+            form.input-form{flex-direction:column;align-items:stretch}
+            thead th{display:none}
+            tbody td{display:block;width:100%;box-sizing:border-box}
+            tbody td::before{content:attr(data-label);display:block;font-size:12px;color:var(--muted)}
+        }
+        .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;margin-top:16px}
+        @media(max-width:980px){.split{grid-template-columns:1fr}}
     </style>
 </head>
-<body>
-<h2>Ghi nhận tỉ số Pickleball</h2>
-<form action="/submit" method="post" th:object="${matchInputDTO}">
-    <label>Nhập tỉ số (VD: Trịnh 1-0 Minh, Trịnh Thịnh 2-0 Minh Đông):</label><br>
-    <input type="text" th:field="*{rawInput}" required>
-    <label>Ngày:</label>
-    <input type="date" th:field="*{matchDate}">
-    <button type="submit">Ghi</button>
-</form>
-<p th:if="${error}" class="error" th:text="${error}"></p>
+<body th:style="'background: linear-gradient(rgba(0,0,0,0.22), rgba(0,0,0,0.22)), url(' + @{/templates/back-ground.jpg} + ') center/cover no-repeat; color:#f2f7ef; margin:0; padding:32px'">
+<div class="container">
+    <h2>Ghi nhận tỉ số Pickleball</h2>
+    <form class="input-form" action="/submit" method="post" th:object="${matchInputDTO}">
+        <label>Nhập tỉ số (VD: Trịnh 1-0 Minh, Trịnh Thịnh 2-0 Minh Đông):<input type="text" th:field="*{rawInput}" required></label>
+        <label>Ngày:<input type="date" th:field="*{matchDate}"></label>
+        <button class="button" type="submit">Ghi</button>
+    </form>
+    <p th:if="${error}" class="error" th:text="${error}"></p>
 
-<p><a th:href="@{/}">Trang chủ</a></p>
+    <p><a th:href="@{/}" class="link">← Trang chủ</a></p>
 
+    <div class="split">
+        <section class="card">
+            <h3>Danh sách trận đấu</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr><th>Trận đấu</th><th>Thời gian</th><th>Xóa</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="m : ${matches}">
+                        <td data-label="Trận đấu" th:text="${m.player1} + ' ' + (${m.player2} ?: '') + ' ' + ${m.scoreTeam1} + ' - ' + ${m.scoreTeam2} + ' ' + ${m.player3} + ' ' + (${m.player4} ?: '')"></td>
+                        <td data-label="Thời gian" th:text="${#dates.format(m.playedAt, 'yyyy-MM-dd')}"></td>
+                        <td data-label="Xóa">
+                            <form class="delete-form" th:action="@{'/delete/' + ${m.id}}" method="post">
+                                <button class="delete-button" type="submit">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-<h3>Danh sách trận đấu</h3>
-<table>
-    <thead>
-    <tr>
-        <th>Trận đấu</th>
-        <th>Thời gian</th>
-        <th>Xóa</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="m : ${matches}">
-        <td th:text="${m.player1} + ' ' + (${m.player2} ?: '') + ' ' + ${m.scoreTeam1} + ' - ' + ${m.scoreTeam2} + ' ' + ${m.player3} + ' ' + (${m.player4} ?: '')"></td>
-        <td th:text="${#dates.format(m.playedAt, 'yyyy-MM-dd')}"></td>
-        <td>
-            <form th:action="@{'/delete/' + ${m.id}}" method="post">
-                <button type="submit">Xóa</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<h3>Thống kê tổng hợp</h3>
-<table>
-    <thead>
-    <tr>
-        <th>Người chơi</th>
-        <th>Thắng đôi</th>
-        <th>Thua đôi</th>
-        <th>Thắng đơn</th>
-        <th>Thua đơn</th>
-        <th>Tiền thua (vnđ)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="entry : ${combinedStats}">
-        <td th:text="${entry.key}"></td>
-        <td th:text="${entry.value[0]}"></td>
-        <td th:text="${entry.value[1]}"></td>
-        <td th:text="${entry.value[2]}"></td>
-        <td th:text="${entry.value[3]}"></td>
-        <td th:text="${#numbers.formatInteger(entry.value[4], 0, 'POINT')}"></td>
-    </tr>
-    </tbody>
-</table>
+        <aside class="card" aria-label="Thống kê tổng hợp">
+            <h3>Thống kê tổng hợp</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr><th>Người chơi</th><th>Thắng đôi</th><th>Thua đôi</th><th>Thắng đơn</th><th>Thua đơn</th><th>Tiền thua (vnđ)</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry : ${combinedStats}">
+                        <td data-label="Người chơi" th:text="${entry.key}"></td>
+                        <td data-label="Thắng đôi" th:text="${entry.value[0]}"></td>
+                        <td data-label="Thua đôi" th:text="${entry.value[1]}"></td>
+                        <td data-label="Thắng đơn" th:text="${entry.value[2]}"></td>
+                        <td data-label="Thua đơn" th:text="${entry.value[3]}"></td>
+                        <td data-label="Tiền thua (vnđ)" th:text="${#numbers.formatInteger(entry.value[4], 0, 'POINT')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </aside>
+    </div>
+</div>
 </body>
 </html>

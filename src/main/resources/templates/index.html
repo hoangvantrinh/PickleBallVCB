@@ -4,103 +4,101 @@
 <head>
     <title>Pickleball Tỉ số</title>
     <meta charset="utf-8"/>
-    <style>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style th:inline="css">
+        :root{--accent1:#2ecc71;--accent2:#ffd166;--muted:#9aa6b2}
+        html,body{height:100%;}
+        body{font-family: Inter, Arial, Helvetica, sans-serif; background: linear-gradient(rgba(0,0,0,0.22), rgba(0,0,0,0.22)), url('@{/templates/back-ground.jpg}') center/cover no-repeat; color:#f2f7ef; margin:0; padding:32px;}
+        .container{max-width:1100px;margin:0 auto;background:rgba(0,0,0,0.48); padding:20px;border-radius:12px;box-shadow:0 12px 36px rgba(2,6,23,0.6)}
+        header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+        .logo{display:flex;align-items:center;gap:12px}
+        .mark{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#081020}
+        h1{font-size:20px;margin:0}
+        .small{font-size:13px;color:var(--muted)}
+        form.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+        form.controls label{display:flex;flex-direction:column;font-size:13px;color:var(--muted)}
+        input[type="text"],input[type="date"]{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:8px 10px;border-radius:8px;color:#f2f7ef}
+        input[type="text"]::placeholder,input[type="date"]::placeholder{color:rgba(242,247,239,0.6)}
+        .button{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#081020;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;box-shadow:0 10px 30px rgba(46,204,113,0.12);transition:transform .14s ease,box-shadow .14s ease}
+        .button:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(46,204,113,0.16)}
 
-        button {
-    transition: all 0.3s ease;
-    transform: scale(1);
-}
-
-button:hover {
-    background-color: #ffcc00;
-    color: #000;
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-
-button:active {
-    transform: scale(0.95);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-        body { font-family: Arial; margin: 40px; }
-        input, button { padding: 8px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; }
-        .error { color: red; margin-top: 10px; }
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    animation: fadeIn 1s ease-in-out;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-th, td {
-    padding: 10px;
-    text-align: center;
-    transition: background-color 0.3s ease;
-}
-
-tr:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.01);
-    transition: transform 0.2s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+        section{margin-top:18px}
+        .card{background:rgba(0,0,0,0.28); padding:16px;border-radius:10px;display:flex;flex-direction:column}
+        .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+        @media(max-width:980px){.split{grid-template-columns:1fr}}
+        .table-wrapper{overflow:auto;margin-top:12px;border-radius:8px;display:flex;flex-direction:column}
+        table{width:100%;border-collapse:collapse;min-width:0;table-layout:fixed}
+        thead th{background:rgba(0,0,0,0.32);text-align:left;padding:12px;font-size:13px;color:#e9f7ea}
+        tbody td{padding:12px;border-top:1px solid rgba(255,255,255,0.03);font-size:14px;color:#e6f5e9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+        .match-title{font-weight:700;color:#fff}
+        .footer{margin-top:18px;text-align:center;color:rgba(223,247,225,0.85);font-size:13px}
+        .error{color:#ff8b8b;margin-top:8px}
+        @media(max-width:720px){
+            form.controls{flex-direction:column;align-items:stretch}
+            header{flex-direction:column;align-items:flex-start}
+            thead th{display:none}
+            tbody td{display:block;width:100%;box-sizing:border-box}
+            tbody td::before{content:attr(data-label);display:block;font-size:12px;color:var(--muted)}
+            .table-wrapper{overflow:visible}
+        }
     </style>
 </head>
-<body>
-<form action="/" method="get">
-    <label>Từ ngày:</label>
-    <input name="fromDate" th:value="${#dates.format(filterDTO.fromDate, 'yyyy-MM-dd')}" type="date"/>
-    <label>Đến ngày:</label>
-    <input name="toDate" th:value="${#dates.format(filterDTO.toDate, 'yyyy-MM-dd')}" type="date"/>
-    <label>Người chơi:</label>
-    <input name="playerName" th:value="${filterDTO.playerName}" type="text"/>
-    <button type="submit">Lọc</button>
-<!--    <a href="/">Hiện tất cả</a>-->
-</form>
-<h3>Danh sách trận đấu</h3>
-<table>
-    <thead>
-    <tr>
-        <th>Trận đấu</th>
-        <th>Thời gian</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="m : ${matches}">
-        <td th:text="${m.player1} + ' ' + (${m.player2} ?: '') + ' ' + ${m.scoreTeam1} + ' - ' + ${m.scoreTeam2} + ' ' + ${m.player3} + ' ' + (${m.player4} ?: '')"></td>
-        <td th:text="${#dates.format(m.playedAt, 'yyyy-MM-dd')}"></td>
-    </tr>
-    </tbody>
-</table>
-<h3>Thống kê tổng hợp</h3>
-<table>
-    <thead>
-    <tr>
-        <th>Người chơi</th>
-        <th>Thắng đôi</th>
-        <th>Thua đôi</th>
-        <th>Thắng đơn</th>
-        <th>Thua đơn</th>
-        <th>Tiền thua (vnđ)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="entry : ${combinedStats}">
-        <td th:text="${entry.key}"></td>
-        <td th:text="${entry.value[0]}"></td>
-        <td th:text="${entry.value[1]}"></td>
-        <td th:text="${entry.value[2]}"></td>
-        <td th:text="${entry.value[3]}"></td>
-        <td th:text="${#numbers.formatInteger(entry.value[4], 0, 'POINT')}"></td>
-    </tr>
-    </tbody>
-</table>
+<body th:style="'background: linear-gradient(rgba(0,0,0,0.22), rgba(0,0,0,0.22)), url(' + @{/templates/back-ground.jpg} + ') center/cover no-repeat; color:#f2f7ef; margin:0; padding:32px;'">
+<div class="container">
+    <header>
+        <div class="logo"><div class="mark">PB</div><div><h1>Pickleball Tỉ số</h1><div class="small">Theo dõi kết quả & thống kê nhanh</div></div></div>
+        <div>
+            <form class="controls" action="/" method="get" role="search">
+                <label>Từ ngày:<input name="fromDate" th:value="${#dates.format(filterDTO.fromDate, 'yyyy-MM-dd')}" type="date"/></label>
+                <label>Đến ngày:<input name="toDate" th:value="${#dates.format(filterDTO.toDate, 'yyyy-MM-dd')}" type="date"/></label>
+                <label>Người chơi:<input name="playerName" th:value="${filterDTO.playerName}" type="text" placeholder="Tên người chơi"/></label>
+                <button class="button" type="submit">Lọc</button>
+            </form>
+        </div>
+    </header>
+
+    <div class="split">
+        <section class="card">
+            <h3>Danh sách trận đấu</h3>
+            <div class="table-wrapper">
+                <table aria-label="Danh sách trận đấu">
+                    <thead>
+                    <tr><th>Trận đấu</th><th>Thời gian</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="m : ${matches}">
+                        <td data-label="Trận đấu"><div class="match-title" th:text="${m.player1} + ' ' + (${m.player2} ?: '') + ' ' + ${m.scoreTeam1} + ' - ' + ${m.scoreTeam2} + ' ' + ${m.player3} + ' ' + (${m.player4} ?: '')"></div></td>
+                        <td data-label="Thời gian" th:text="${#dates.format(m.playedAt, 'yyyy-MM-dd')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <aside class="card" aria-label="Thống kê tổng hợp">
+            <h3>Thống kê tổng hợp</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr><th>Người chơi</th><th>Thắng đôi</th><th>Thua đôi</th><th>Thắng đơn</th><th>Thua đơn</th><th>Tiền thua (vnđ)</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry : ${combinedStats}">
+                        <td data-label="Người chơi" th:text="${entry.key}"></td>
+                        <td data-label="Thắng đôi" th:text="${entry.value[0]}"></td>
+                        <td data-label="Thua đôi" th:text="${entry.value[1]}"></td>
+                        <td data-label="Thắng đơn" th:text="${entry.value[2]}"></td>
+                        <td data-label="Thua đơn" th:text="${entry.value[3]}"></td>
+                        <td data-label="Tiền thua (vnđ)" th:text="${#numbers.formatInteger(entry.value[4], 0, 'POINT')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </aside>
+    </div>
+
+    <div class="footer">Phiên bản nhẹ — cần chỉnh giao diện thêm? Yêu cầu màu hoặc phông chữ.</div>
+</div>
 </body>
 </html>
