@@ -5,9 +5,6 @@ WORKDIR /app
 # Copy toàn bộ code vào container
 COPY . .
 
-# Cấp quyền và chạy lệnh build JAR (bỏ qua chạy test để build nhanh hơn)
-RUN chmod +x gradlew && ./gradlew bootJar --no-daemon -x test
-
 # Stage 2: Chạy ứng dụng
 FROM amazoncorretto:17-alpine
 WORKDIR /app
