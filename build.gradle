@@ -80,3 +80,6 @@ dependencyManagement {
 tasks.bootJar {
     archiveFileName.set("app.jar")
 }
+jar {
+    enabled = false
+}
