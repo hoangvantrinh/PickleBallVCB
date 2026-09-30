@@ -1,37 +1,22 @@
-# ==========================================
-# Stage 1: Build ứng dụng (Sử dụng JDK)
-# ==========================================
-FROM eclipse-temurin:17-jdk-alpine AS build
+# Stage 1: Build dự án bằng Docker Image cài sẵn Gradle (Không cần wrapper/gradlew)
+FROM gradle:8-jdk17-alpine AS build
 WORKDIR /app
 
-# Step 1: Copy các file cấu hình Gradle trước để tận dụng Docker Cache
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
+# Copy toàn bộ mã nguồn vào container
+COPY . .
 
-# Sửa lỗi ký tự xuống dòng Windows (CRLF -> LF) và tải trước thư viện
-RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
-RUN ./gradlew dependencies --no-daemon
+# Build bằng lệnh gradle chính thức
+RUN gradle bootJar --no-daemon -x test
 
-# Step 2: Copy toàn bộ mã nguồn và đóng gói JAR
-COPY src src
-RUN ./gradlew bootJar --no-daemon -x test
-
-# ==========================================
-# Stage 2: Môi trường chạy app (Sử dụng JRE siêu nhẹ)
-# ==========================================
+# Stage 2: Môi trường chạy siêu nhẹ cho Render
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
-# Copy duy nhất file JAR đã build từ Stage 1
+# Copy file JAR từ Stage 1
 COPY --from=build /app/build/libs/*.jar app.jar
 
-# TỐI ƯU CHO RENDER FREE TIER (512MB RAM):
-# Giới hạn Heap Memory khoảng 352MB để dành 160MB còn lại cho JVM Metaspace & OS,
-# tránh bị Render kill tiến trình (Lỗi Exit Code 137 / OOM).
+# Tối ưu RAM cho gói Free của Render (512MB)
 ENV JAVA_OPTS="-Xms256m -Xmx352m -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError"
 
 EXPOSE 8080
-
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
