@@ -8,7 +8,7 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:E:/_app/PickleBallVCB/run/database/database;AUTO_SERVER=TRUE
+    url: jdbc:h2:file:/tmp/database;AUTO_SERVER=TRUE
     username: sa
     password: sa
   jpa:
@@ -40,7 +40,7 @@ logging:
 
 # setting port khi run app
 server:
-  port: 8088
+  port: 8080
 
 springdoc:
   packagesToScan: com.vcb

@@ -8,7 +8,7 @@
     <style th:inline="css">
         :root{--accent1:#2ecc71;--accent2:#ffd166;--muted:#9aa6b2}
         html,body{height:100%;}
-        body{font-family: Inter, Arial, Helvetica, sans-serif; background: linear-gradient(rgba(0,0,0,0.22), rgba(0,0,0,0.22)), url('@{/templates/back-ground.jpg}') center/cover no-repeat; color:#f2f7ef; margin:0; padding:32px;}
+        body{font-family: Inter, Arial, Helvetica, sans-serif; background: linear-gradient(rgba(0,0,0,0.12), rgba(0,0,0,0.12)), url('@{/templates/back-ground.jpg}') center/cover no-repeat; color:#f2f7ef; margin:0; padding:32px;}
         .container{max-width:1100px;margin:0 auto;background:rgba(0,0,0,0.48); padding:20px;border-radius:12px;box-shadow:0 12px 36px rgba(2,6,23,0.6)}
         header{display:flex;align-items:center;justify-content:space-between;gap:16px}
         .logo{display:flex;align-items:center;gap:12px}
@@ -24,7 +24,7 @@
 
         section{margin-top:18px}
         .card{background:rgba(0,0,0,0.28); padding:16px;border-radius:10px;display:flex;flex-direction:column}
-        .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+        .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;position:relative}
         @media(max-width:980px){.split{grid-template-columns:1fr}}
         .table-wrapper{overflow:auto;margin-top:12px;border-radius:8px;display:flex;flex-direction:column}
         table{width:100%;border-collapse:collapse;min-width:0;table-layout:fixed}
@@ -81,16 +81,16 @@
             <div class="table-wrapper">
                 <table>
                     <thead>
-                    <tr><th>Người chơi</th><th>Thắng đôi</th><th>Thua đôi</th><th>Thắng đơn</th><th>Thua đơn</th><th>Tiền thua (vnđ)</th></tr>
+                    <tr><th>Người chơi</th><th>Tiền độ (vnđ)</th><th>Thắng đôi</th><th>Thua đôi</th><th>Thắng đơn</th><th>Thua đơn</th></tr>
                     </thead>
                     <tbody>
                     <tr th:each="entry : ${combinedStats}">
                         <td data-label="Người chơi" th:text="${entry.key}"></td>
+                        <td data-label="Tiền thua (vnđ)" th:text="${#numbers.formatInteger(entry.value[4], 0, 'POINT')}"></td>
                         <td data-label="Thắng đôi" th:text="${entry.value[0]}"></td>
                         <td data-label="Thua đôi" th:text="${entry.value[1]}"></td>
                         <td data-label="Thắng đơn" th:text="${entry.value[2]}"></td>
                         <td data-label="Thua đơn" th:text="${entry.value[3]}"></td>
-                        <td data-label="Tiền thua (vnđ)" th:text="${#numbers.formatInteger(entry.value[4], 0, 'POINT')}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -98,7 +98,7 @@
         </aside>
     </div>
 
-    <div class="footer">Phiên bản nhẹ — cần chỉnh giao diện thêm? Yêu cầu màu hoặc phông chữ.</div>
+    <div class="footer">Trung tâm Công nghệ Thông tin - Vietcombank</div>
 </div>
 </body>
 </html>

@@ -132,7 +132,8 @@ public class WebController {
     @PostMapping("/delete/{id}")
     public String deleteMatch(@PathVariable Long id) {
         matchService.deleteById(id);
-        return "redirect:/";
+        return "redirect:/total";
+        //return "total";
     }
 
 }
